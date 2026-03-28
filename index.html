@@ -166,6 +166,7 @@
             border-radius: 15px;
             backdrop-filter: blur(10px);
             transition: all 0.3s ease;
+            min-width: 150px;
         }
 
         .stat-item:hover {
@@ -180,6 +181,17 @@
             font-weight: 700;
             color: var(--primary);
             display: block;
+            transition: all 0.3s ease;
+        }
+
+        .stat-number.updating {
+            animation: numberUpdate 0.5s ease;
+        }
+
+        @keyframes numberUpdate {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.2); color: var(--gold); }
+            100% { transform: scale(1); }
         }
 
         .stat-label {
@@ -187,6 +199,13 @@
             color: #888;
             text-transform: uppercase;
             letter-spacing: 0.1em;
+        }
+
+        .last-update {
+            font-size: 0.7rem;
+            color: #555;
+            margin-top: 0.5rem;
+            font-style: italic;
         }
 
         /* Buttons */
@@ -214,6 +233,7 @@
             position: relative;
             overflow: hidden;
             border: 2px solid transparent;
+            cursor: pointer;
         }
 
         .cta-button::before {
@@ -260,6 +280,81 @@
             width: 24px;
             height: 24px;
             fill: currentColor;
+        }
+
+        /* API Config Section */
+        .api-config {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: rgba(0, 0, 0, 0.8);
+            border: 1px solid var(--primary);
+            border-radius: 10px;
+            padding: 1rem;
+            z-index: 1000;
+            backdrop-filter: blur(10px);
+            max-width: 300px;
+            display: none;
+        }
+
+        .api-config.active {
+            display: block;
+        }
+
+        .api-config h3 {
+            font-family: 'Orbitron', sans-serif;
+            color: var(--primary);
+            margin-bottom: 1rem;
+            font-size: 0.9rem;
+        }
+
+        .api-config input {
+            width: 100%;
+            padding: 0.5rem;
+            margin-bottom: 0.5rem;
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 62, 62, 0.3);
+            border-radius: 5px;
+            color: white;
+            font-size: 0.8rem;
+        }
+
+        .api-config button {
+            width: 100%;
+            padding: 0.5rem;
+            background: var(--primary);
+            border: none;
+            border-radius: 5px;
+            color: white;
+            cursor: pointer;
+            font-family: 'Orbitron', sans-serif;
+            font-size: 0.8rem;
+            transition: all 0.3s ease;
+        }
+
+        .api-config button:hover {
+            background: #ff6b6b;
+        }
+
+        .config-toggle {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 1001;
+            background: rgba(255, 62, 62, 0.2);
+            border: 1px solid var(--primary);
+            color: var(--primary);
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            cursor: pointer;
+            font-family: 'Orbitron', sans-serif;
+            font-size: 0.7rem;
+            transition: all 0.3s ease;
+        }
+
+        .config-toggle:hover {
+            background: var(--primary);
+            color: white;
         }
 
         /* Content Section */
@@ -414,6 +509,32 @@
             }
         }
 
+        /* Error Message */
+        .error-message {
+            position: fixed;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(255, 62, 62, 0.9);
+            color: white;
+            padding: 1rem 2rem;
+            border-radius: 10px;
+            font-family: 'Orbitron', sans-serif;
+            font-size: 0.9rem;
+            z-index: 1000;
+            display: none;
+            animation: slideUp 0.3s ease;
+        }
+
+        @keyframes slideUp {
+            from { transform: translateX(-50%) translateY(100px); opacity: 0; }
+            to { transform: translateX(-50%) translateY(0); opacity: 1; }
+        }
+
+        .error-message.show {
+            display: block;
+        }
+
         /* Responsive */
         @media (max-width: 768px) {
             .profile-img {
@@ -427,11 +548,23 @@
             
             .stat-item {
                 padding: 1rem;
+                min-width: 120px;
+            }
+
+            .stat-number {
+                font-size: 2rem;
             }
             
             .cta-container {
                 flex-direction: column;
                 align-items: center;
+            }
+
+            .api-config {
+                left: 10px;
+                right: 10px;
+                top: 60px;
+                max-width: none;
             }
         }
 
@@ -458,6 +591,18 @@
     <div class="bg-grid"></div>
     <div class="particles" id="particles"></div>
 
+    <!-- Configuration Panel -->
+    <button class="config-toggle" onclick="toggleConfig()">⚙️ Config API</button>
+    <div class="api-config" id="apiConfig">
+        <h3>Configuration YouTube API</h3>
+        <input type="text" id="apiKey" placeholder="Votre clé API YouTube" />
+        <input type="text" id="channelId" placeholder="ID de la chaîne YouTube" value="UC..." />
+        <button onclick="saveConfig()">Sauvegarder & Actualiser</button>
+        <p style="font-size: 0.7rem; color: #666; margin-top: 0.5rem;">
+            Obtenez une clé API sur <a href="https://console.cloud.google.com" target="_blank" style="color: var(--primary);">Google Cloud Console</a>
+        </p>
+    </div>
+
     <section class="hero">
         <div class="profile-container">
             <div class="profile-ring"></div>
@@ -472,16 +617,19 @@
 
         <div class="stats">
             <div class="stat-item">
-                <span class="stat-number">145</span>
+                <span class="stat-number" id="subCount" data-target="subscribers">145</span>
                 <span class="stat-label">Abonnés</span>
+                <div class="last-update" id="subUpdate">Actualisation...</div>
             </div>
             <div class="stat-item">
-                <span class="stat-number">40</span>
+                <span class="stat-number" id="videoCount" data-target="videos">40</span>
                 <span class="stat-label">Vidéos</span>
+                <div class="last-update" id="videoUpdate">Actualisation...</div>
             </div>
             <div class="stat-item">
-                <span class="stat-number">∞</span>
-                <span class="stat-label">Analyses</span>
+                <span class="stat-number" id="viewCount" data-target="views">∞</span>
+                <span class="stat-label">Vues Totales</span>
+                <div class="last-update" id="viewUpdate">Actualisation...</div>
             </div>
         </div>
 
@@ -536,8 +684,23 @@
         </div>
     </footer>
 
+    <div class="error-message" id="errorMessage"></div>
+
     <script>
-        // Create floating particles
+        // Configuration YouTube API
+        const CONFIG = {
+            API_KEY: localStorage.getItem('youtube_api_key') || '',
+            CHANNEL_ID: localStorage.getItem('youtube_channel_id') || 'UC...', // Remplacez par votre ID de chaîne
+            REFRESH_INTERVAL: 5 * 60 * 1000, // Rafraîchissement toutes les 5 minutes
+            CACHE_DURATION: 2 * 60 * 1000 // Cache de 2 minutes pour éviter les limites d'API
+        };
+
+        // État du système
+        let lastFetchTime = 0;
+        let cachedData = null;
+        let refreshIntervalId = null;
+
+        // Création des particules
         function createParticles() {
             const container = document.getElementById('particles');
             const particleCount = 50;
@@ -552,28 +715,216 @@
             }
         }
 
-        // Animate stats on scroll
-        function animateStats() {
-            const stats = document.querySelectorAll('.stat-number');
-            stats.forEach(stat => {
-                const target = parseInt(stat.textContent);
-                if (!isNaN(target)) {
-                    let current = 0;
-                    const increment = target / 50;
-                    const timer = setInterval(() => {
-                        current += increment;
-                        if (current >= target) {
-                            stat.textContent = target;
-                            clearInterval(timer);
-                        } else {
-                            stat.textContent = Math.floor(current);
-                        }
-                    }, 30);
+        // Animation des nombres avec effet de comptage
+        function animateNumber(element, target, duration = 1000) {
+            const start = parseInt(element.textContent) || 0;
+            const range = target - start;
+            const startTime = performance.now();
+
+            function update(currentTime) {
+                const elapsed = currentTime - startTime;
+                const progress = Math.min(elapsed / duration, 1);
+                
+                // Easing function easeOutQuart
+                const ease = 1 - Math.pow(1 - progress, 4);
+                
+                const current = Math.floor(start + (range * ease));
+                element.textContent = formatNumber(current);
+
+                if (progress < 1) {
+                    requestAnimationFrame(update);
+                } else {
+                    element.textContent = formatNumber(target);
+                    element.classList.add('updating');
+                    setTimeout(() => element.classList.remove('updating'), 500);
                 }
-            });
+            }
+
+            requestAnimationFrame(update);
         }
 
-        // Intersection Observer for animations
+        // Formatage des grands nombres
+        function formatNumber(num) {
+            if (num >= 1000000) {
+                return (num / 1000000).toFixed(1) + 'M';
+            } else if (num >= 1000) {
+                return (num / 1000).toFixed(1) + 'K';
+            }
+            return num.toString();
+        }
+
+        // Formatage complet pour l'affichage détaillé
+        function formatNumberFull(num) {
+            return new Intl.NumberFormat('fr-FR').format(num);
+        }
+
+        // Récupération des statistiques YouTube
+        async function fetchYouTubeStats() {
+            const now = Date.now();
+            
+            // Vérifier le cache
+            if (cachedData && (now - lastFetchTime < CONFIG.CACHE_DURATION)) {
+                return cachedData;
+            }
+
+            // Vérifier si la configuration est présente
+            if (!CONFIG.API_KEY || CONFIG.API_KEY === '' || !CONFIG.CHANNEL_ID || CONFIG.CHANNEL_ID === 'UC...') {
+                throw new Error('Configuration API manquante. Cliquez sur "Config API" en haut à droite.');
+            }
+
+            try {
+                const response = await fetch(
+                    `https://www.googleapis.com/youtube/v3/channels?part=statistics&id=${CONFIG.CHANNEL_ID}&key=${CONFIG.API_KEY}`
+                );
+
+                if (!response.ok) {
+                    if (response.status === 403) {
+                        throw new Error('Clé API invalide ou quota dépassé');
+                    } else if (response.status === 404) {
+                        throw new Error('Chaîne non trouvée. Vérifiez l\'ID de la chaîne.');
+                    }
+                    throw new Error(`Erreur HTTP: ${response.status}`);
+                }
+
+                const data = await response.json();
+
+                if (!data.items || data.items.length === 0) {
+                    throw new Error('Aucune donnée trouvée pour cette chaîne');
+                }
+
+                const stats = data.items[0].statistics;
+                
+                const result = {
+                    subscribers: parseInt(stats.subscriberCount) || 0,
+                    videos: parseInt(stats.videoCount) || 0,
+                    views: parseInt(stats.viewCount) || 0,
+                    timestamp: now
+                };
+
+                // Mettre en cache
+                cachedData = result;
+                lastFetchTime = now;
+
+                return result;
+
+            } catch (error) {
+                console.error('Erreur lors de la récupération des statistiques:', error);
+                throw error;
+            }
+        }
+
+        // Mise à jour de l'affichage
+        function updateDisplay(stats) {
+            const subElement = document.getElementById('subCount');
+            const videoElement = document.getElementById('videoCount');
+            const viewElement = document.getElementById('viewCount');
+
+            // Mise à jour avec animation si les valeurs ont changé
+            if (subElement.textContent !== formatNumber(stats.subscribers)) {
+                animateNumber(subElement, stats.subscribers);
+            }
+            if (videoElement.textContent !== formatNumber(stats.videos)) {
+                animateNumber(videoElement, stats.videos);
+            }
+            if (viewElement.textContent !== formatNumber(stats.views)) {
+                animateNumber(viewElement, stats.views);
+            }
+
+            // Mise à jour des timestamps
+            const timeString = new Date().toLocaleTimeString('fr-FR');
+            document.getElementById('subUpdate').textContent = `Mis à jour à ${timeString}`;
+            document.getElementById('videoUpdate').textContent = `Mis à jour à ${timeString}`;
+            document.getElementById('viewUpdate').textContent = `Mis à jour à ${timeString}`;
+
+            // Sauvegarder dans localStorage pour l'affichage hors ligne
+            localStorage.setItem('last_stats', JSON.stringify(stats));
+            localStorage.setItem('last_update', timeString);
+        }
+
+        // Afficher une erreur
+        function showError(message) {
+            const errorDiv = document.getElementById('errorMessage');
+            errorDiv.textContent = message;
+            errorDiv.classList.add('show');
+            setTimeout(() => {
+                errorDiv.classList.remove('show');
+            }, 5000);
+        }
+
+        // Fonction principale de mise à jour
+        async function updateStats() {
+            try {
+                const stats = await fetchYouTubeStats();
+                updateDisplay(stats);
+            } catch (error) {
+                console.error('Erreur:', error);
+                showError(error.message);
+                
+                // Utiliser les données en cache si disponibles
+                const lastStats = localStorage.getItem('last_stats');
+                if (lastStats) {
+                    const stats = JSON.parse(lastStats);
+                    updateDisplay(stats);
+                    document.getElementById('subUpdate').textContent += ' (hors ligne)';
+                    document.getElementById('videoUpdate').textContent += ' (hors ligne)';
+                    document.getElementById('viewUpdate').textContent += ' (hors ligne)';
+                }
+            }
+        }
+
+        // Démarrer le rafraîchissement automatique
+        function startAutoRefresh() {
+            // Arrêter l'intervalle existant si présent
+            if (refreshIntervalId) {
+                clearInterval(refreshIntervalId);
+            }
+
+            // Mise à jour immédiate
+            updateStats();
+
+            // Rafraîchissement périodique
+            refreshIntervalId = setInterval(updateStats, CONFIG.REFRESH_INTERVAL);
+        }
+
+        // Gestion de la configuration
+        function toggleConfig() {
+            const config = document.getElementById('apiConfig');
+            config.classList.toggle('active');
+            
+            // Pré-remplir les champs
+            document.getElementById('apiKey').value = CONFIG.API_KEY;
+            document.getElementById('channelId').value = CONFIG.CHANNEL_ID;
+        }
+
+        function saveConfig() {
+            const apiKey = document.getElementById('apiKey').value.trim();
+            const channelId = document.getElementById('channelId').value.trim();
+
+            if (!apiKey || !channelId) {
+                showError('Veuillez remplir tous les champs');
+                return;
+            }
+
+            // Sauvegarder dans localStorage
+            localStorage.setItem('youtube_api_key', apiKey);
+            localStorage.setItem('youtube_channel_id', channelId);
+
+            // Mettre à jour la configuration
+            CONFIG.API_KEY = apiKey;
+            CONFIG.CHANNEL_ID = channelId;
+
+            // Masquer le panneau et rafraîchir
+            document.getElementById('apiConfig').classList.remove('active');
+            
+            // Réinitialiser le cache et démarrer
+            cachedData = null;
+            lastFetchTime = 0;
+            startAutoRefresh();
+            
+            showError('Configuration sauvegardée ! Actualisation...');
+        }
+
+        // Observer pour les animations au scroll
         const observerOptions = {
             threshold: 0.1,
             rootMargin: '0px 0px -100px 0px'
@@ -588,11 +939,25 @@
             });
         }, observerOptions);
 
-        // Initialize
+        // Initialisation
         document.addEventListener('DOMContentLoaded', () => {
             createParticles();
+
+            // Charger les dernières statistiques connues
+            const lastStats = localStorage.getItem('last_stats');
+            const lastUpdate = localStorage.getItem('last_update');
             
-            // Animate feature cards
+            if (lastStats && lastUpdate) {
+                const stats = JSON.parse(lastStats);
+                document.getElementById('subCount').textContent = formatNumber(stats.subscribers);
+                document.getElementById('videoCount').textContent = formatNumber(stats.videos);
+                document.getElementById('viewCount').textContent = formatNumber(stats.views);
+                document.getElementById('subUpdate').textContent = `Dernière mise à jour: ${lastUpdate}`;
+                document.getElementById('videoUpdate').textContent = `Dernière mise à jour: ${lastUpdate}`;
+                document.getElementById('viewUpdate').textContent = `Dernière mise à jour: ${lastUpdate}`;
+            }
+
+            // Animer les cartes de fonctionnalités
             document.querySelectorAll('.feature-card').forEach((card, index) => {
                 card.style.opacity = '0';
                 card.style.transform = 'translateY(50px)';
@@ -600,21 +965,15 @@
                 observer.observe(card);
             });
 
-            // Animate stats when visible
-            const statsSection = document.querySelector('.stats');
-            const statsObserver = new IntersectionObserver((entries) => {
-                entries.forEach(entry => {
-                    if (entry.isIntersecting) {
-                        animateStats();
-                        statsObserver.unobserve(entry.target);
-                    }
-                });
-            }, { threshold: 0.5 });
-            
-            statsObserver.observe(statsSection);
+            // Démarrer le système si configuré
+            if (CONFIG.API_KEY && CONFIG.CHANNEL_ID && CONFIG.CHANNEL_ID !== 'UC...') {
+                startAutoRefresh();
+            } else {
+                showError('Configurez votre API YouTube (cliquez sur ⚙️)');
+            }
         });
 
-        // Parallax effect on mouse move
+        // Effet parallax souris
         document.addEventListener('mousemove', (e) => {
             const x = e.clientX / window.innerWidth;
             const y = e.clientY / window.innerHeight;
@@ -623,11 +982,15 @@
             profile.style.transform = `translate(${(x - 0.5) * 20}px, ${(y - 0.5) * 20}px)`;
         });
 
-        // Dynamic profile image handling
+        // Gestion de l'image de profil
         const profileImg = document.getElementById('profileImg');
         profileImg.addEventListener('error', function() {
             this.src = 'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" width="300" height="300"%3E%3Crect width="300" height="300" fill="%231a1a2e"/%3E%3Ctext x="50%25" y="50%25" font-family="Orbitron" font-size="60" fill="%23ff3e3e" text-anchor="middle" dominant-baseline="middle"%3EIBRIM%3C/text%3E%3C/svg%3E';
         });
+
+        // Exposer les fonctions globalement pour les boutons
+        window.toggleConfig = toggleConfig;
+        window.saveConfig = saveConfig;
     </script>
 </body>
 </html>
