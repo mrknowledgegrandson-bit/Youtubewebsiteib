@@ -1,1 +1,633 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>IBRIM VS LE MONDE - Analyse Géopolitique</title>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
 
+        :root {
+            --primary: #ff3e3e;
+            --secondary: #1a1a2e;
+            --accent: #16213e;
+            --gold: #ffd700;
+            --text: #eaeaea;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, #0f0f23 0%, #1a1a2e 50%, #16213e 100%);
+            color: var(--text);
+            overflow-x: hidden;
+            min-height: 100vh;
+        }
+
+        /* Animated background grid */
+        .bg-grid {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: 
+                linear-gradient(rgba(255, 62, 62, 0.03) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(255, 62, 62, 0.03) 1px, transparent 1px);
+            background-size: 50px 50px;
+            animation: gridMove 20s linear infinite;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        @keyframes gridMove {
+            0% { transform: translate(0, 0); }
+            100% { transform: translate(50px, 50px); }
+        }
+
+        /* Hero Section */
+        .hero {
+            position: relative;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 2rem;
+            z-index: 1;
+        }
+
+        .profile-container {
+            position: relative;
+            margin-bottom: 3rem;
+            animation: float 6s ease-in-out infinite;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-20px); }
+        }
+
+        .profile-img {
+            width: 300px;
+            height: 300px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 4px solid var(--primary);
+            box-shadow: 
+                0 0 60px rgba(255, 62, 62, 0.5),
+                0 0 100px rgba(255, 62, 62, 0.3),
+                inset 0 0 60px rgba(0,0,0,0.5);
+            animation: pulse 2s ease-in-out infinite;
+            filter: contrast(1.1) brightness(1.1);
+        }
+
+        @keyframes pulse {
+            0%, 100% { box-shadow: 0 0 60px rgba(255, 62, 62, 0.5), 0 0 100px rgba(255, 62, 62, 0.3); }
+            50% { box-shadow: 0 0 80px rgba(255, 62, 62, 0.8), 0 0 120px rgba(255, 62, 62, 0.5); }
+        }
+
+        .profile-ring {
+            position: absolute;
+            top: -20px;
+            left: -20px;
+            right: -20px;
+            bottom: -20px;
+            border: 2px dashed var(--gold);
+            border-radius: 50%;
+            animation: spin 20s linear infinite;
+        }
+
+        @keyframes spin {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+
+        h1 {
+            font-family: 'Orbitron', sans-serif;
+            font-size: clamp(2rem, 5vw, 4rem);
+            font-weight: 900;
+            text-align: center;
+            margin-bottom: 1rem;
+            background: linear-gradient(135deg, #fff 0%, var(--primary) 50%, var(--gold) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            animation: glow 3s ease-in-out infinite;
+        }
+
+        @keyframes glow {
+            0%, 100% { filter: drop-shadow(0 0 20px rgba(255, 62, 62, 0.5)); }
+            50% { filter: drop-shadow(0 0 40px rgba(255, 62, 62, 0.8)); }
+        }
+
+        .tagline {
+            font-size: 1.5rem;
+            text-align: center;
+            max-width: 800px;
+            margin-bottom: 3rem;
+            color: #b0b0b0;
+            line-height: 1.6;
+            animation: fadeInUp 1s ease-out 0.5s both;
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Stats Section */
+        .stats {
+            display: flex;
+            gap: 3rem;
+            margin-bottom: 3rem;
+            flex-wrap: wrap;
+            justify-content: center;
+            animation: fadeInUp 1s ease-out 0.8s both;
+        }
+
+        .stat-item {
+            text-align: center;
+            padding: 1.5rem 2rem;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 62, 62, 0.3);
+            border-radius: 15px;
+            backdrop-filter: blur(10px);
+            transition: all 0.3s ease;
+        }
+
+        .stat-item:hover {
+            transform: translateY(-10px);
+            border-color: var(--primary);
+            box-shadow: 0 10px 30px rgba(255, 62, 62, 0.3);
+        }
+
+        .stat-number {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: var(--primary);
+            display: block;
+        }
+
+        .stat-label {
+            font-size: 0.9rem;
+            color: #888;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+        }
+
+        /* Buttons */
+        .cta-container {
+            display: flex;
+            gap: 2rem;
+            flex-wrap: wrap;
+            justify-content: center;
+            animation: fadeInUp 1s ease-out 1.1s both;
+        }
+
+        .cta-button {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.8rem;
+            padding: 1.2rem 2.5rem;
+            font-family: 'Orbitron', sans-serif;
+            font-size: 1rem;
+            font-weight: 600;
+            text-decoration: none;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            border-radius: 50px;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+            border: 2px solid transparent;
+        }
+
+        .cta-button::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+            transition: left 0.5s ease;
+        }
+
+        .cta-button:hover::before {
+            left: 100%;
+        }
+
+        .youtube-btn {
+            background: linear-gradient(135deg, #ff0000 0%, #cc0000 100%);
+            color: white;
+            box-shadow: 0 10px 30px rgba(255, 0, 0, 0.4);
+        }
+
+        .youtube-btn:hover {
+            transform: translateY(-5px) scale(1.05);
+            box-shadow: 0 20px 40px rgba(255, 0, 0, 0.6);
+        }
+
+        .twitter-btn {
+            background: linear-gradient(135deg, #000000 0%, #1a1a1a 100%);
+            color: white;
+            border-color: #fff;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
+        }
+
+        .twitter-btn:hover {
+            transform: translateY(-5px) scale(1.05);
+            box-shadow: 0 20px 40px rgba(255, 255, 255, 0.2);
+            background: white;
+            color: black;
+        }
+
+        .icon {
+            width: 24px;
+            height: 24px;
+            fill: currentColor;
+        }
+
+        /* Content Section */
+        .content-section {
+            padding: 5rem 2rem;
+            max-width: 1200px;
+            margin: 0 auto;
+            position: relative;
+            z-index: 1;
+        }
+
+        .section-title {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 2.5rem;
+            text-align: center;
+            margin-bottom: 3rem;
+            color: var(--gold);
+            position: relative;
+            display: inline-block;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+
+        .section-title::after {
+            content: '';
+            position: absolute;
+            bottom: -10px;
+            left: 0;
+            width: 100%;
+            height: 3px;
+            background: linear-gradient(90deg, transparent, var(--primary), transparent);
+        }
+
+        .about-text {
+            font-size: 1.2rem;
+            line-height: 1.8;
+            text-align: center;
+            max-width: 800px;
+            margin: 0 auto 3rem;
+            color: #ccc;
+        }
+
+        /* Features Grid */
+        .features {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin-top: 3rem;
+        }
+
+        .feature-card {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 62, 62, 0.2);
+            border-radius: 20px;
+            padding: 2rem;
+            text-align: center;
+            transition: all 0.4s ease;
+            backdrop-filter: blur(10px);
+        }
+
+        .feature-card:hover {
+            transform: translateY(-10px) rotateX(5deg);
+            border-color: var(--primary);
+            box-shadow: 0 20px 40px rgba(255, 62, 62, 0.2);
+            background: rgba(255, 255, 255, 0.05);
+        }
+
+        .feature-icon {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+        }
+
+        .feature-title {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 1.3rem;
+            margin-bottom: 1rem;
+            color: var(--primary);
+        }
+
+        .feature-desc {
+            color: #999;
+            line-height: 1.6;
+        }
+
+        /* Footer */
+        footer {
+            text-align: center;
+            padding: 3rem 2rem;
+            border-top: 1px solid rgba(255, 62, 62, 0.2);
+            margin-top: 5rem;
+            position: relative;
+            z-index: 1;
+        }
+
+        .footer-text {
+            color: #666;
+            font-size: 0.9rem;
+        }
+
+        .footer-links {
+            display: flex;
+            gap: 2rem;
+            justify-content: center;
+            margin-top: 1rem;
+        }
+
+        .footer-links a {
+            color: #888;
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+
+        .footer-links a:hover {
+            color: var(--primary);
+        }
+
+        /* Particles */
+        .particles {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        .particle {
+            position: absolute;
+            width: 4px;
+            height: 4px;
+            background: var(--primary);
+            border-radius: 50%;
+            opacity: 0.5;
+            animation: particleFloat 10s infinite;
+        }
+
+        @keyframes particleFloat {
+            0%, 100% {
+                transform: translateY(100vh) rotate(0deg);
+                opacity: 0;
+            }
+            10% {
+                opacity: 0.5;
+            }
+            90% {
+                opacity: 0.5;
+            }
+            100% {
+                transform: translateY(-100vh) rotate(720deg);
+                opacity: 0;
+            }
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .profile-img {
+                width: 200px;
+                height: 200px;
+            }
+            
+            .stats {
+                gap: 1rem;
+            }
+            
+            .stat-item {
+                padding: 1rem;
+            }
+            
+            .cta-container {
+                flex-direction: column;
+                align-items: center;
+            }
+        }
+
+        /* Scrollbar */
+        ::-webkit-scrollbar {
+            width: 10px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: var(--secondary);
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: var(--primary);
+            border-radius: 5px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: #ff6b6b;
+        }
+    </style>
+</head>
+<body>
+    <div class="bg-grid"></div>
+    <div class="particles" id="particles"></div>
+
+    <section class="hero">
+        <div class="profile-container">
+            <div class="profile-ring"></div>
+            <img src="profile.jpg" alt="MR IBRIM" class="profile-img" id="profileImg">
+        </div>
+        
+        <h1>IBRIM VS LE MONDE</h1>
+        
+        <p class="tagline">
+            Cette chaîne YouTube est dédiée à l'analyse géopolitique dans le monde.
+        </p>
+
+        <div class="stats">
+            <div class="stat-item">
+                <span class="stat-number">145</span>
+                <span class="stat-label">Abonnés</span>
+            </div>
+            <div class="stat-item">
+                <span class="stat-number">40</span>
+                <span class="stat-label">Vidéos</span>
+            </div>
+            <div class="stat-item">
+                <span class="stat-number">∞</span>
+                <span class="stat-label">Analyses</span>
+            </div>
+        </div>
+
+        <div class="cta-container">
+            <a href="https://www.youtube.com/@MR_IBRIM" target="_blank" class="cta-button youtube-btn">
+                <svg class="icon" viewBox="0 0 24 24">
+                    <path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/>
+                </svg>
+                Chaîne YouTube
+            </a>
+            <a href="https://x.com/ib244339" target="_blank" class="cta-button twitter-btn">
+                <svg class="icon" viewBox="0 0 24 24">
+                    <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/>
+                </svg>
+                Twitter / X
+            </a>
+        </div>
+    </section>
+
+    <section class="content-section">
+        <h2 class="section-title">Ce que vous trouverez</h2>
+        <p class="about-text">
+            Analyses approfondies des relations internationales, conflits géopolitiques, 
+            stratégies militaires et enjeux économiques mondiaux. Une vision critique et 
+            documentée des événements qui façonnent notre monde.
+        </p>
+
+        <div class="features">
+            <div class="feature-card">
+                <div class="feature-icon">🌍</div>
+                <h3 class="feature-title">Analyse Géopolitique</h3>
+                <p class="feature-desc">Décryptage des tensions internationales et des enjeux stratégiques mondiaux</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">📊</div>
+                <h3 class="feature-title">Données Factuelles</h3>
+                <p class="feature-desc">Analyses basées sur des sources vérifiables et des données concrètes</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">🎯</div>
+                <h3 class="feature-title">Perspective Unique</h3>
+                <p class="feature-desc">Un regard critique et indépendant sur l'actualité internationale</p>
+            </div>
+        </div>
+    </section>
+
+    <footer>
+        <p class="footer-text">© 2026 IBRIM VS LE MONDE - Tous droits réservés</p>
+        <div class="footer-links">
+            <a href="https://www.youtube.com/@MR_IBRIM" target="_blank">YouTube</a>
+            <a href="https://x.com/ib244339" target="_blank">Twitter</a>
+        </div>
+    </footer>
+
+    <script>
+        // Create floating particles
+        function createParticles() {
+            const container = document.getElementById('particles');
+            const particleCount = 50;
+            
+            for (let i = 0; i < particleCount; i++) {
+                const particle = document.createElement('div');
+                particle.className = 'particle';
+                particle.style.left = Math.random() * 100 + '%';
+                particle.style.animationDelay = Math.random() * 10 + 's';
+                particle.style.animationDuration = (Math.random() * 10 + 10) + 's';
+                container.appendChild(particle);
+            }
+        }
+
+        // Animate stats on scroll
+        function animateStats() {
+            const stats = document.querySelectorAll('.stat-number');
+            stats.forEach(stat => {
+                const target = parseInt(stat.textContent);
+                if (!isNaN(target)) {
+                    let current = 0;
+                    const increment = target / 50;
+                    const timer = setInterval(() => {
+                        current += increment;
+                        if (current >= target) {
+                            stat.textContent = target;
+                            clearInterval(timer);
+                        } else {
+                            stat.textContent = Math.floor(current);
+                        }
+                    }, 30);
+                }
+            });
+        }
+
+        // Intersection Observer for animations
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -100px 0px'
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.style.opacity = '1';
+                    entry.target.style.transform = 'translateY(0)';
+                }
+            });
+        }, observerOptions);
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', () => {
+            createParticles();
+            
+            // Animate feature cards
+            document.querySelectorAll('.feature-card').forEach((card, index) => {
+                card.style.opacity = '0';
+                card.style.transform = 'translateY(50px)';
+                card.style.transition = `all 0.6s ease ${index * 0.2}s`;
+                observer.observe(card);
+            });
+
+            // Animate stats when visible
+            const statsSection = document.querySelector('.stats');
+            const statsObserver = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        animateStats();
+                        statsObserver.unobserve(entry.target);
+                    }
+                });
+            }, { threshold: 0.5 });
+            
+            statsObserver.observe(statsSection);
+        });
+
+        // Parallax effect on mouse move
+        document.addEventListener('mousemove', (e) => {
+            const x = e.clientX / window.innerWidth;
+            const y = e.clientY / window.innerHeight;
+            
+            const profile = document.querySelector('.profile-container');
+            profile.style.transform = `translate(${(x - 0.5) * 20}px, ${(y - 0.5) * 20}px)`;
+        });
+
+        // Dynamic profile image handling
+        const profileImg = document.getElementById('profileImg');
+        profileImg.addEventListener('error', function() {
+            this.src = 'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" width="300" height="300"%3E%3Crect width="300" height="300" fill="%231a1a2e"/%3E%3Ctext x="50%25" y="50%25" font-family="Orbitron" font-size="60" fill="%23ff3e3e" text-anchor="middle" dominant-baseline="middle"%3EIBRIM%3C/text%3E%3C/svg%3E';
+        });
+    </script>
+</body>
+</html>
